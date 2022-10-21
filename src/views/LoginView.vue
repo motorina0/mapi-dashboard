@@ -6,28 +6,28 @@
 			<v-col class="d-flex justify-center">
 				<v-card elevation="12" min-width="300" width="500" color="secondary">
 					<v-toolbar color="primary">
-						<v-toolbar-title>M-Dashboard</v-toolbar-title>
+						<v-toolbar-title>LNbits Dashboard</v-toolbar-title>
 						<v-spacer />
 					</v-toolbar>
 					<v-card-text>
 						<v-form>
 							<v-text-field
-								ref="username"
-								v-model="username"
-								:rules="[() => !!username || 'This field is required']"
+								ref="domain"
+								v-model="domain"
+								:rules="[() => !!domain || 'This field is required']"
 								prepend-icon="mdi-account"
-								label="Login"
-								placeholder="TotallyNotThanos"
+								label="Domain"
+								placeholder="legend.lnbits.com"
 								required
 							/>
 							<v-text-field
-								ref="password"
-								v-model="password"
-								:rules="[() => !!password || 'This field is required']"
+								ref="readKey"
+								v-model="readKey"
+								:rules="[() => !!readKey || 'This field is required']"
 								:append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
 								:type="showPassword ? 'text' : 'password'"
 								prepend-icon="mdi-lock"
-								label="Password"
+								label="Invoice/read key"
 								placeholder="*********"
 								counter
 								required
@@ -56,9 +56,9 @@
 		name: 'LoginView',
 		data: function () {
 			return {
-				username: 'eve.holt@reqres.in',
-				password: 'cityslicka',
-				errorMessages: 'Incorrect login info',
+				readKey: '',
+				domain: '',
+				errorMessages: 'Incorrect auth info',
 				snackbar: false, // this is the wrong pass notification
 				color: 'general',
 				showPassword: false,
@@ -69,10 +69,10 @@
 		//needs to finish implementing using the states in mutations
 		methods: {
 			login: function () {
-				let username = this.username // you use this.username to access the username saved in the data
-				let password = this.password
+				let readKey = this.readKey
+				let domain = this.domain
 				this.$store
-					.dispatch('login', { username, password }) //calls the login action and passes login info
+					.dispatch('login', {readKey, domain }) //calls the login action and passes login info
 					.then(() => this.$router.push('/')) //redirect to dash after login
 					.catch((err) => {
 						console.log(err)
@@ -82,7 +82,7 @@
 		},
 		metaInfo() {
 			return {
-				title: 'Super Secret | Login',
+				title: 'LNbits Auth',
 			}
 		},
 	}

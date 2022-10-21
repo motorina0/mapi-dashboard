@@ -13,7 +13,7 @@
 				<span class="font-weight-light copyright">
 					&copy;
 					{{ new Date().getFullYear() }}
-					M-Dashboard by
+					LNbits-Dashboard 
 					<a href="Materialfy.com" target="_blank">Materialfy</a>, crafted with
 					Vuetify
 					<v-icon color="tertiary" size="17">mdi-heart</v-icon>

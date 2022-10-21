@@ -1,6 +1,7 @@
 // https://vuex.vuejs.org/en/actions.html
 import axios from 'axios'
 import { restApi } from '../plugins/axios'
+import { lnbitsApi } from '../plugins/lnbits'
 import SecureLS from 'secure-ls'
 
 let ls = new SecureLS()
@@ -13,16 +14,17 @@ that we will use to trigger mutations.
 async function login({ commit }, userData) {
 	// one day ill implement snackbars with the auth state or use it in a component or footer
 	commit('auth_request')
-  let response = await restApi
-		.post('login', {
-			username: userData.username,
-			password: userData.password,
-		})
+	console.log('### userData', userData)
+	const wallet = { inkey: userData.readKey }
+	lnbitsApi.hostname = userData.domain
+	console.log('### lnbitsApi.hostname', lnbitsApi.hostname)
+	let response = await lnbitsApi
+		.getWallet(wallet)
 		.then((response) => {
 			// we use the data we get back in the response object after the promise succeeds
 			//you can change the data object props to match whatever your sever sends
-			const token = response.data.token
-			const user = response.data.username
+			const token = wallet.inkey
+			const user = response.name
 			// storing jwt in localStorage. https cookie is safer place to store
 			ls.set('tokenKey', { token: token }) // using secure-ls to encrypt local storage
 			ls.set('userKey', { user: user })
@@ -35,7 +37,7 @@ async function login({ commit }, userData) {
 			commit('auth_error')
 			ls.remove('token')
 		})
-  return response
+	return response
 }
 
 export default {

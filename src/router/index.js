@@ -41,6 +41,7 @@ if they have requireAuth(dashboard routes) you use the "to" objects name prop to
 https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
  */
 router.beforeEach((to, from, next) => {
+  console.log('### to', to)
   if (
 		to.matched.some((record) => record.meta.requiresAuth) &&
 		!store.getters.authorized
