@@ -25,12 +25,15 @@ async function login({ commit }, userData) {
 			//you can change the data object props to match whatever your sever sends
 			const token = wallet.inkey
 			const user = response.name
+			
 			// storing jwt in localStorage. https cookie is safer place to store
 			ls.set('tokenKey', { token: token }) // using secure-ls to encrypt local storage
+			ls.set('walletKey', { wallet: wallet }) // using secure-ls to encrypt local storage
 			ls.set('userKey', { user: user })
-			axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+			ls.set('hostKey', { hostname: userData.domain })
+			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 			// calling the mutation "auth_success" to change/update state.properties to the new values passed along in the second param
-			commit('auth_success', { token, user })
+			commit('auth_success', { token, user, wallet })
 		})
 		.catch((err) => {
 			console.log('login error' + err)

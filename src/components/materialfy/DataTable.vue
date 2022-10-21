@@ -18,7 +18,7 @@
 	
 		<template v-slot:top v-if="showHeader">
 			<v-toolbar color="primary" flat>
-				<v-toolbar-title>Users CRUD 2</v-toolbar-title>
+				<v-toolbar-title>Payments</v-toolbar-title>
 				<v-divider class="mx-4" inset vertical></v-divider>
 
 				<v-text-field
@@ -33,17 +33,7 @@
 				<!-- this dialog section controls the new item button/pop-up functionality v-model controls dialog pop up -->
 				<v-dialog v-model="dialog" max-width="500px">
 					<!-- controls sending and capturing 'on' event to open v-card dialog pop up -->
-					<template v-slot:activator="{ on, attrs }">
-						<v-btn
-							color="primary"
-							dark
-							class="mb-2"
-							v-bind="attrs"
-							v-on="on"
-						>
-							New Item
-						</v-btn>
-					</template>
+					
 					<!-- this pops up after the new item button is hit, controls the editing pop up -->
 					<v-card>
 						<v-card-title>
@@ -224,7 +214,8 @@
 </template>
 
 <script>
-import { genericApi } from "../../plugins/axios";
+
+import { lnbitsApi } from '../../plugins/lnbits'
 export default {
 	props: {
 		showHeader: {
@@ -310,18 +301,31 @@ export default {
 	methods: {
 		//uses axios to send get request to api in genericAPI
 		getusernames() {
-			genericApi
-				.get(this.apiEndpoint)
+
+			const hostKey = this.$store.state.hostname
+			const tokenKey = this.$store.state.token
+			const wallet = { inkey: tokenKey.token }
+			lnbitsApi.hostname = hostKey.hostname
+			
+
+			// genericApi
+			// 	.get(this.apiEndpoint)
+			lnbitsApi.getPayments(wallet)
 				.then((response) => {
-					this.userList = response.data.data;
+					console.log('### response', response)
+					this.userList = response.data.map(p => ({
+						name: p.memo,
+						pending: p.pending,
+						amount: p.amount
+					}))
 				})
 				.catch((error) => console.log(error));
-			genericApi
-				.get(this.apiEndpoint2)
-				.then((response) => {
-					this.userList2 = response.data.data;
-				})
-				.catch((error) => console.log(error));
+			// genericApi
+			// 	.get(this.apiEndpoint2)
+			// 	.then((response) => {
+			// 		this.userList2 = response.data.data;
+			// 	})
+			// 	.catch((error) => console.log(error));
 		},
 		//this dynamically creates the headers based off the keys of the first item in the userList array
 		getHeaders() {

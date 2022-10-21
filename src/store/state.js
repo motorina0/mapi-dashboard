@@ -6,6 +6,8 @@ let ls = new SecureLS()
 export default {
 	authStatus: '',
 	token: ls.get('tokenKey') || '',
+	hostname: ls.get('hostKey') || '',
+	wallet: ls.get('walletKey') || {},
 	user: {},
 	tableList: [],
 	notifications: [

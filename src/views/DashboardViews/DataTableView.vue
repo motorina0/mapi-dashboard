@@ -45,7 +45,7 @@
 				>
 					<template v-slot:top>
 						<v-toolbar color="primary" flat>
-							<v-toolbar-title>Users CRUD 2</v-toolbar-title>
+							<v-toolbar-title>Users CRUD sss2</v-toolbar-title>
 							<v-divider class="mx-4" inset vertical></v-divider>
 
 							<v-text-field

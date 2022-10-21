@@ -1,7 +1,8 @@
-const lnbitsApi = window.lnbitsApiJS({})
+const lnbitsApi = window.lnbitsApiJS()
+const watchonlyApi = window.watchonlyApiJS()
 
 // const watchOnlyApi = 
 export {
     lnbitsApi,
-    // watchOnlyApi
+    watchonlyApi
 };

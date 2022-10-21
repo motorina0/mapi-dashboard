@@ -7,7 +7,7 @@
 			<!-- First DATA TABLE Card -->
 			<v-col col md="4">
 				<MaterialfyHeaderCard
-					cardTitle="Employee Stats"
+					cardTitle="OnChain Accounts"
 					:cardShowInnerList="false"
 					:cardShowActions="false"
 					:cardShowDivider="false"
@@ -44,47 +44,17 @@
 			</v-col>
 			<!-- V-TAB TO-DO CARD -->
 			<v-col col md="3">
-				<MaterialfyBasicCard :cardShowTitle="false">
-					<!-- Header -->
-					<template v-slot:crdSubHeader>
-						<!-- add new tabs under -->
-						<v-tabs
-							v-model="tab"
-							align-with-title
-							background-color="tertiary"
-							class="elevation-3 mb-1"
-							center-active
-						>
-							<span class="text-subtitle-1 mr-1 d-flex align-center">
-								<v-icon class="ma-1">mdi-ballot</v-icon> Tasks:
-							</span>
-							<v-tabs-slider color="secondary"></v-tabs-slider>
-
-							<v-tab v-for="item in tabItems" :key="item.tab">
-								<v-icon class="ma-1">{{ item.icon }}</v-icon>
-								{{ item.tab }}
-							</v-tab>
-						</v-tabs>
+				<MaterialfyColorCard
+					cardMaxWidth="500"
+					cardInnerText="Used Addresses"
+					:cardShowDivider="false"
+					:cardShowActions="false"
+					cardColor="primary"
+				>
+					<template v-slot:crdInner>
+						<materialfy-apex-donut />
 					</template>
-					<!-- Card inner area for tab content -->
-					<template #crdInner>
-						<v-tabs-items v-model="tab">
-							<v-tab-item v-for="item in tabItems" :key="item.tab">
-								<template v-for="(tabText, index) in textList">
-									<v-card flat color="primary" :key="index" class="my-3">
-										<v-row wrap>
-											<v-list-item :class="index % 2 ? 'background' : 'secondary'"
-												><v-list-item-title>{{
-													index + 1 + '.' + '  ' + tabText
-												}}</v-list-item-title></v-list-item
-											>
-										</v-row>
-									</v-card>
-								</template>
-							</v-tab-item>
-						</v-tabs-items>
-					</template>
-				</MaterialfyBasicCard>
+				</MaterialfyColorCard>
 			</v-col>
 			<!-- LAST CARD -->
 			<v-col  md="5">
@@ -110,22 +80,12 @@
 			</v-col>
 			<!-- SECOND COLOR CARD with secondary color -->
 			<v-col md="4">
-				<MaterialfyColorCard
-					cardMaxWidth="500"
-					cardInnerText="Users Usering"
-					:cardShowDivider="false"
-					:cardShowActions="false"
-					cardColor="primary"
-				>
-					<template v-slot:crdInner>
-						<materialfy-apex-donut />
-					</template>
-				</MaterialfyColorCard>
+			
 			</v-col>
 			<v-col md="4">
 				<MaterialfyColorCard
 					cardMaxWidth="500"
-					cardInnerText="User Engagement"
+					cardInnerText="Wallet Type"
 					:cardShowDivider="false"
 					:cardShowActions="false"
 					:cardShowInnerText="false"
@@ -174,6 +134,8 @@
 
 <script>
 	// this is where the line chart sparkline gets its colors
+	import { watchonlyApi } from '../../plugins/lnbits'
+	
 	const gradients = [
 		['#222'],
 		['#42b3f4'],
@@ -207,63 +169,32 @@
 				{
 					sortable: false,
 					text: 'Name',
-					value: 'name',
+					value: 'title',
 					class: 'tertiary--text text-h6',
 				},
 				{
 					sortable: false,
-					text: 'Salary',
-					value: 'salary',
+					text: 'Balance',
+					value: 'balance',
 					align: 'float-right',
 					class: 'tertiary--text text-h6',
 				},
 				{
 					sortable: false,
-					text: 'Country',
-					value: 'country',
+					text: 'Type',
+					value: 'type',
 					align: 'float-right',
 					class: 'tertiary--text text-h6',
 				},
 				{
 					sortable: false,
-					text: 'City',
-					value: 'city',
+					text: 'Fingerprint',
+					value: 'fingerprint',
 					align: 'float-right',
 					class: 'tertiary--text text-h6',
 				},
 			],
-			tableItems: [
-				{
-					name: 'Dakota Rice',
-					country: 'Niger',
-					city: 'Oud-Tunrhout',
-					salary: '$35,738',
-				},
-				{
-					name: 'Minerva Hooper',
-					country: 'Curaçao',
-					city: 'Sinaai-Waas',
-					salary: '$23,738',
-				},
-				{
-					name: 'Sage Rodriguez',
-					country: 'Netherlands',
-					city: 'Overland Park',
-					salary: '$56,142',
-				},
-				{
-					name: 'Philip Chanley',
-					country: 'Korea, South',
-					city: 'Gloucester',
-					salary: '$38,735',
-				},
-				{
-					name: 'Doris Greene',
-					country: 'Malawi',
-					city: 'Feldkirchen in Kārnten',
-					salary: '$63,542',
-				},
-			],
+			tableItems: [],
 			tab: null,
 			tabItems: [
 				{ tab: 'Bugs', icon: 'mdi-bug' },
@@ -286,6 +217,17 @@
 				throw new Error('Sentry Error')
 			},
 		},
+		created: async function () {
+			const hostKey = this.$store.state.hostname
+			const tokenKey = this.$store.state.token
+			console.log('#### tokenKey', tokenKey)
+			console.log('### watchonlyApi.hostname', watchonlyApi.hostname)
+			const wallet = { inkey: tokenKey.token }
+			watchonlyApi.hostname = hostKey.hostname
+			const resp2 = await watchonlyApi.getAccounts(wallet)
+			console.log('#### resp2', resp2.data)
+			this.tableItems = resp2.data
+		}
 	}
 </script>
 
